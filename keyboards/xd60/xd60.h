@@ -4,6 +4,12 @@
 #include "quantum.h"
 #include "led.h"
 
+extern uint32_t backlit_flags;
+extern uint8_t  backlit_base;
+extern void set_backlit(void);
+
+#define BF_CAPS (1)
+
 /* XD60 LEDs
  *   GPIO pads
  *   0 F7 not connected
@@ -13,11 +19,18 @@
  *   B2 Capslock LED
  *   B0 not connected
  */
-inline void xd60_caps_led_on(void)    { DDRB |=  (1<<2); PORTB &= ~(1<<2); }
-inline void xd60_bl_led_on(void)    	{ DDRF |=  (1<<5); PORTF &= ~(1<<5); }
+inline void xd60_caps_led_on(void)    {
+    backlit_flags |= (1UL<<BF_CAPS);
+    DDRB |=  (1<<2); PORTB &= ~(1<<2);
+}
 
-inline void xd60_caps_led_off(void)   { DDRB &= ~(1<<2); PORTB &= ~(1<<2); }
+inline void xd60_caps_led_off(void)   {
+    backlit_flags &= ~(1UL<<BF_CAPS);
+    DDRB &= ~(1<<2); PORTB &= ~(1<<2);
+}
+
 inline void xd60_bl_led_off(void)   	{ DDRF &= ~(1<<5); PORTF &= ~(1<<5); }
+inline void xd60_bl_led_on(void)    	{ DDRF |=  (1<<5); PORTF &= ~(1<<5); }
 
 /* XD60 Keymap Definition Macro */
 #define KEYMAP( \
