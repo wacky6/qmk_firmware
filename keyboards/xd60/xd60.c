@@ -50,6 +50,12 @@ void set_backlit(void) {
 
 #undef IS_BACKLIT_FLAG_SET
 
+extern inline void xd60_caps_led_on(void);
+extern inline void xd60_bl_led_on(void);
+
+extern inline void xd60_caps_led_off(void);
+extern inline void xd60_bl_led_off(void);
+
 void led_set_kb(uint8_t usb_led) {
 	// put your keyboard LED indicator (ex: Caps Lock LED) toggling code here
 
