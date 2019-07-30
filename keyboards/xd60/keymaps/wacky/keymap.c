@@ -29,11 +29,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // 2: Function Layer
   #define FN_LAYER (2)
   KEYMAP(
-      KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,   KC_F12,  KC_F13,   KC_DEL,    \
-      F(16),   KC_WH_U, KC_UP,   KC_WH_D, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PSCR, KC_MPRV,  KC_MNXT,           KC_TRNS,   \
-      KC_TRNS, KC_LEFT, KC_DOWN, KC_RIGHT,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,           LCTL(KC_ENTER),   \
-      KC_LSFT, KC_NO,   KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_VOLD, KC_VOLU, KC_MUTE,  KC_TRNS, KC_PGUP,  F(8),   \
-      KC_TRNS, KC_TRNS, KC_TRNS,                          F(31),                                KC_TRNS, F(0),     KC_HOME, KC_PGDN,  KC_END),
+      F(30),   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,   KC_F12,  KC_F13,   KC_DEL,    \
+      F(16),   KC_WH_U, KC_UP,   KC_WH_D, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_PSCR, KC_MPRV,  KC_MNXT,          KC_TRNS,   \
+      KC_TRNS, KC_LEFT, KC_DOWN, KC_RIGHT,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS,          LCTL(KC_ENTER),   \
+      KC_LSFT, KC_NO,   KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_VOLD, KC_VOLU, KC_MUTE,  KC_TRNS, KC_PGUP, F(8),   \
+      KC_TRNS, KC_TRNS, KC_TRNS,                          F(31),                                KC_TRNS, F(0),     KC_HOME, KC_PGDN, KC_END),
 
 };
 
@@ -43,7 +43,8 @@ enum function_id {
     BASE_LAYER_MAC,
     INTELI_LEFT,
     INTELI_RIGHT,
-    TOGGLE_BACKLIGHT
+    TOGGLE_BACKLIGHT,
+    TOGGLE_FRONTLIGHT
 };
 
 // Custom Actions
@@ -52,6 +53,7 @@ const uint16_t PROGMEM fn_actions[] = {
     [8] = ACTION_FUNCTION(TOGGLE_X3_REPAIR),   // Toggle Ctrl / Ctrl-J Press (Play X3 Happily!)
     [16] = ACTION_FUNCTION(BASE_LAYER_MAC),    // Set base layer to mac
     [24] = ACTION_FUNCTION(ESC_TILD),
+    [30] = ACTION_FUNCTION(TOGGLE_FRONTLIGHT),
     [31] = ACTION_FUNCTION(TOGGLE_BACKLIGHT)
 };
 
@@ -84,6 +86,7 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
 {
     static uint8_t registered_esc_tild;
     static uint8_t x3_super_repair = 0;
+    static uint8_t frontlight_flag = 1;
     switch (id) {
         case ESC_TILD:
             if (record->event.pressed) {
@@ -103,6 +106,17 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
         case TOGGLE_BACKLIGHT:
             if (record->event.pressed) {
                 rgblight_toggle();
+            }
+        break;
+        case TOGGLE_FRONTLIGHT:
+            if (record->event.pressed) {
+                if (frontlight_flag) {
+                    frontlight_flag = 0;
+                    xd60_bl_led_off();
+                } else {
+                    frontlight_flag = 1;
+                    xd60_bl_led_on();
+                }
             }
         break;
         case TOGGLE_X3_REPAIR:
