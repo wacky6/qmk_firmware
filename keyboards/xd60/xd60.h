@@ -2,11 +2,13 @@
 
 #include "quantum.h"
 
-extern uint32_t backlit_flags;
-extern uint8_t  backlit_base;
-extern void set_backlit(void);
-
-#define BF_CAPS (1)
+// Bottom lighting color: 0xRRGGBB
+extern uint32_t bottom_rgb;
+// Center-bottom lighting (mood light): 0xRRGGBB
+extern uint32_t bottom_center_rgb;;
+extern void set_bottom_light(void);
+// Flag to indicate if CAPS_LOCK is on.
+extern bool is_caps_lock;
 
 /* XD60 LEDs
  *   GPIO pads

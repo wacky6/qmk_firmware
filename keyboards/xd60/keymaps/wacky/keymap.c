@@ -72,10 +72,17 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt) {
 };
 
 #define default_layer_is_on(layer) ( default_layer_state & (1<<layer) )
-uint8_t determine_backlit_base(void) {
-    if (default_layer_is_on(MAC_LAYER))
-        return 1;
-    return 0;
+void set_bottomlight_color(void) {
+    #define COLOR_SAKURA_PINK    (0xFF3A48)
+    #define COLOR_SAKURA_YELLOW  (0xFFD007)
+    #define COLOR_SAKURA_GREEN   (0x10FFC0)
+    bottom_rgb = default_layer_is_on(MAC_LAYER)
+               ? COLOR_SAKURA_PINK
+               : COLOR_SAKURA_YELLOW;
+
+    bottom_center_rgb = is_caps_lock
+                      ? COLOR_SAKURA_GREEN
+                      : bottom_rgb;
 }
 
 #define MODS_SHIFT_MASK (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))
@@ -99,8 +106,6 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
         case BASE_LAYER_MAC:
             if (record->event.pressed) {
                 default_layer_xor(1UL << MAC_LAYER);
-                backlit_base = determine_backlit_base();
-                set_backlit();
             }
         break;
         case TOGGLE_BACKLIGHT:
@@ -144,6 +149,6 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 // Loop
 void matrix_scan_user(void) {
-    backlit_base = determine_backlit_base();
-    set_backlit();
+    set_bottomlight_color();
+    set_bottom_light();
 };

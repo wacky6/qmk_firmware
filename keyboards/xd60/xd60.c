@@ -1,49 +1,29 @@
 #include "xd60.h"
 
-uint32_t backlit_flags;
-uint8_t  backlit_base;
+uint32_t bottom_rgb = 0x00800000;
+uint32_t bottom_center_rgb = 0x00800000;
+bool is_caps_lock = false;
 
-uint8_t get_base_g(void) {
-    switch (backlit_base) {
-        case 1:   return 127;
-        default:  return 0;
-    }
-}
+void set_bottom_light(void) {
+#define RR(var) ((var>>16) & 0xFF)
+#define GG(var) ((var>>8) & 0xFF)
+#define BB(var) ((var>>0) & 0xFF)
+#define RGB(var) RR(var), GG(var), BB(var)
 
-uint8_t get_base_b(void) {
-    switch (backlit_base) {
-        default:  return 0;
-    }
-}
+    // led 0-1, 4-5
+    setrgb(RGB(bottom_rgb), led+0);
+    setrgb(RGB(bottom_rgb), led+1);
+    setrgb(RGB(bottom_rgb), led+4);
+    setrgb(RGB(bottom_rgb), led+5);
 
-uint8_t get_base_r(void) {
-    switch (backlit_base) {
-        case 1:   return 0;
-        default:  return 127;
-    }
-}
+    // led 2-3, bottom center (mood light / caps lock)
+    setrgb(RGB(bottom_center_rgb), led+2);
+    setrgb(RGB(bottom_center_rgb), led+3);
 
-#define IS_BACKLIT_FLAG_SET(flag) ( backlit_flags & (1<<(flag) ) )
-
-void set_backlit(void) {
-    uint8_t r = get_base_r(),
-            g = get_base_g(),
-            b = get_base_b();
-
-    // led 0-1
-    setrgb(r, g, b, led+0);
-    setrgb(r, g, b, led+1);
-    // led 2-3, used as caps_lock indicator
-    if ( IS_BACKLIT_FLAG_SET(BF_CAPS) ) {
-        setrgb(r, g, 255, led+2);
-        setrgb(r, g, 255, led+3);
-    } else {
-		setrgb(r, g, b, led+2);
-		setrgb(r, g, b, led+3);
-	}
-    // led 4-5
-    setrgb(r, g, b, led+4);
-    setrgb(r, g, b, led+5);
+#undef RGB
+#undef BB
+#undef GG
+#undef RR
 
     rgblight_set();
 }
@@ -61,8 +41,10 @@ void led_set_kb(uint8_t usb_led) {
 
     if (usb_led & (1<<USB_LED_CAPS_LOCK)) {
 	    xd60_caps_led_on();
+        is_caps_lock = true;
     } else {
 	    xd60_caps_led_off();
+        is_caps_lock = false;
     }
 
     led_set_user(usb_led);
