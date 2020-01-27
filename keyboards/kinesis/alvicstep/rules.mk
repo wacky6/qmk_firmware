@@ -1,10 +1,4 @@
-ifndef QUANTUM_DIR
-	include ../../../Makefile
-endif
+CUSTOM_MATRIX = yes # need to do our own thing with the matrix
 
-# just silently stop, since we need to upload with teensy uploader
-upload: build
-
-
-
-
+# Project specific files
+SRC += matrix.c

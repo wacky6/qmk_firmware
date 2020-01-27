@@ -4,7 +4,7 @@ This page exists to document best practices when writing documentation for QMK. 
 
 # Page Opening
 
-Your documentation page should generally start with an H1 heading, followed by a 1 paragrah description of what the user will find on this page. Keep in mind that this heading and paragraph will sit next to the Table of Contents, so keep the heading short and avoid long strings with no whitespace.
+Your documentation page should generally start with an H1 heading, followed by a 1 paragraph description of what the user will find on this page. Keep in mind that this heading and paragraph will sit next to the Table of Contents, so keep the heading short and avoid long strings with no whitespace.
 
 Example:
 
@@ -22,18 +22,43 @@ Your page should generally have multiple "H1" headings. Only H1 and H2 headings 
 
 You can have styled hint blocks drawn around text to draw attention to it.
 
-{% hint style='info' %}
-This uses `hint style='info'`
-{% endhint %}
+### Important
 
-{% hint style='tip' %}
-This uses `hint style='tip'`
-{% endhint %}
+```
+!> This is important
+```
 
-{% hint style='danger' %}
-This uses `hint style='danger'`
-{% endhint %}
+Renders as:
 
-{% hint style='working' %}
-This uses `hint style='working'`
-{% endhint %}
+!> This is important
+
+### General Tips
+
+```
+?> This is a helpful tip.
+```
+
+Renders as:
+
+?> This is a helpful tip.
+
+
+# Documenting Features
+
+If you create a new feature for QMK, create a documentation page for it. It doesn't have to be very long, a few sentences describing your feature and a table listing any relevant keycodes is enough. Here is a basic template:
+
+```markdown
+# My Cool Feature
+
+This page describes my cool feature. You can use my cool feature to make coffee and order cream and sugar to be delivered via drone.
+
+## My Cool Feature Keycodes
+
+|Long Name|Short Name|Description|
+|---------|----------|-----------|
+|KC_COFFEE||Make Coffee|
+|KC_CREAM||Order Cream|
+|KC_SUGAR||Order Sugar|
+```
+
+Place your documentation into `docs/feature_<my_cool_feature>.md`, and add that file to the appropriate place in `docs/_sidebar.md`. If you have added any keycodes be sure to add them to `docs/keycodes.md` with a link back to your feature page.
